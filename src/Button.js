@@ -7,14 +7,14 @@ class Button extends React.Component {
 
   render() {
     let { display } = this.props
+    let { change } = this.props
 
     return (
       <div>
         <h1>{ display }</h1>
-        <button onClick={ this.props.change }>Click me!</button>
+        <button onClick={ change }>Click me!</button>
       </div>
     )
   }
-
 }
 export default Button

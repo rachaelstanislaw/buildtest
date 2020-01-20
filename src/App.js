@@ -12,7 +12,7 @@ class App extends Component {
 
   displayChange = () => {
     let newDisplay = "Success!"
-    this.setState({display: newDisplay})
+    this.setState({ display: newDisplay })
   }
 
 
@@ -20,7 +20,7 @@ class App extends Component {
     const { display } = this.state
     return (
       <div>
-        <Button display={ display } change={this.displayChange}/>
+        <Button display={ display } change={ this.displayChange } />
       </div>
     );
   }
