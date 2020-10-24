@@ -1,0 +1,33 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+#colorbox {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+#button {
+  width: 10vw;
+  height: 15vh;
+  text-align: center;
+  border-radius: 25px;
+  padding: 10px 10px 20px 10px;
+  border: 1px solid #BFBFBF;
+  background-color: white;
+  box-shadow: 2px 2px blue, 4px 4px yellow, 6px 6px red;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#button:active {
+  box-shadow: 2px 2px blue;
+  transform: translateY(4px);
+}
