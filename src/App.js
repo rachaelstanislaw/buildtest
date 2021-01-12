@@ -49,7 +49,7 @@ export default class App extends Component {
     let { hex, message } = this.state
     return(
       <>
-        <h1>Random Color Generator</h1>
+        <h1>Random Color Generator!</h1>
         <ColorBox
           changeColor={ this.changeColor }
           hex = { hex }
