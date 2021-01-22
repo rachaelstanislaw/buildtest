@@ -4,9 +4,9 @@ jobs:
     docker: circleci/node
     steps:
       - checkout
-      - run
+      - run:
         name: "'run' statements can actually contain a 'name' and 'command' argument as well"
-        commands: |
+        command: |
           echo "You can even have multiline commands."
       - restore_cache:
           keys:
