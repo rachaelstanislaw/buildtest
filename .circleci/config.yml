@@ -1,16 +1,16 @@
-version: 2.1
+version: 2
 jobs:
   build:
     docker: circleci/node
     steps:
       - checkout
       - run:
-        name: "'run' statements can actually contain a 'name' and 'command' argument as well"
-        command: |
-          echo "You can even have multiline commands."
+          name: "'run' statements can actually contain a 'name' and 'command' argument as well"
+          command: |
+            echo "You can even have multiline commands."
       - restore_cache:
           keys:
-          - v1-dependencies-
+            - v1-dependencies-
       - run: mkdir ~/cache/
       - run: echo "testfile" > ~/cache/log.txt
       - save_cache:
