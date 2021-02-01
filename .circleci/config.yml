@@ -9,7 +9,9 @@ jobs:
       # These two tests should run in parallel. Make it so!
       - run:
           command: |
-            echo $(circleci tests glob "tests/**/*")
+            echo $(circleci tests glob "src/test_*.sh")
+            circleci tests glob "src/test_*.sh"| xargs -n 1 echo
+            circleci tests split test_filenames.txt
       - run:
           name: Run Hello test
           command: |
