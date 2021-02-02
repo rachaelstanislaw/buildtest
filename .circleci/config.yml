@@ -15,9 +15,7 @@ jobs:
       - run: ruby -v
       - run:
           command: |
-            rvm list known
             rvm install 2.3.8
-            ruby -v
 
 workflows:
   run-jobs:
