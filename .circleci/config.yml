@@ -9,6 +9,9 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - run:
+          command: |
+            rvm list known
       # Add step below to install Ruby version 2.3.8
       - ruby/install:
           version: '2.7'
