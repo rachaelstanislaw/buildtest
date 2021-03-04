@@ -1,20 +1,47 @@
- version: 2.1
+version: 2.1
 
-orbs:
-  ruby: circleci/ruby@1.1.2
+executors:
+  my-executor:
+    docker:
+      - image: buildpack-deps:jessie
+    working_directory: /root/project
 
 jobs:
-  build:
-    docker:
-      - image: cimg/base:stable
+  flow:
+    executor: my-executor
     steps:
-      - checkout
-      # Add step below to install Ruby version 2.3.8
-      - ruby/install:
-          version: '2.3.8'
-      - run: ruby -v
+      - run: mkdir -p /root/project/Zipped
+      - run: echo "Hello, world!" > /root/project/Zipped/echo-output
+
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: Zipped
+          # Must be relative path from root
+          paths:
+            - echo-output
+
+  downstream:
+    executor: my-executor
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /root/project/Zipped
+
+      - run: |
+          if [[ `cat /root/project/Zipped/echo-output` == "Hello, world!" ]]; then
+            echo "It worked!";
+          else
+            echo "Nope!"; exit 1
+          fi
 
 workflows:
-  run-jobs:
+  version: 2
+
+  btd:
     jobs:
-      - build
+      - flow
+      - downstream:
+          requires:
+            - flow
