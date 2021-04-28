@@ -38,7 +38,7 @@ export default class App extends Component {
       } else if(random === 14){
           return "e"
       } else {
-          return "f"
+          return "H"
       }
     }).join("").toUpperCase()
     // set the state of the new hex code and change the message that displays to the user
