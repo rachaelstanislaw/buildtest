@@ -1,23 +1,15 @@
 version: 2.1
 
-orbs:
-  ruby: circleci/ruby@1.1.2
-
 jobs:
-  build:
-    docker:
-      - image: cimg/base:stable
+  build-gradle:
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
-      - checkout
-      # Add step below to install Ruby version 2.3.8
-      - ruby/install:
-          version: '2.7'
-      - run: ruby -v
-      - run:
-          command: |
-            rvm install 2.3.8
+      - run: java -version
+      - run: sudo apt-get update && sudo apt-get install openjdk-11-jdk && echo 'export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"' >> $BASH_ENV
+      - run: java -version
 
 workflows:
-  run-jobs:
+  run-filter:
     jobs:
-      - build
+      - build-gradle
