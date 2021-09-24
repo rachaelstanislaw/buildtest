@@ -1,15 +1,9 @@
 version: 2.1
 
-jobs:
-  build-gradle:
-    machine:
-      image: ubuntu-1604:201903-01
-    steps:
-      - run: java -version
-      - run: sudo apt-get update && sudo apt-get install openjdk-11-jdk && echo 'export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"' >> $BASH_ENV
-      - run: java -version
+orbs:
+  maven: circleci/maven@1.2.0
 
 workflows:
-  run-filter:
+  maven_test:
     jobs:
-      - build-gradle
+      - maven/test
