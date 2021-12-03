@@ -9,13 +9,6 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      # Add step below to install Ruby version 2.3.8
-      - ruby/install:
-          version: '2.6'
-      - run: ruby -v
-      - run:
-          command: |
-            rvm install 2.3.8
       - run:
           command: |
             echo $CIRCLE_SHA1
