@@ -10,9 +10,6 @@ jobs:
     steps:
       - checkout
       # Add step below to install Ruby version 2.3.8
-      - ruby/install:
-          version: '2.7'
-      - run: ruby -v
 
 workflows:
   run-jobs:
