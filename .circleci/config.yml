@@ -9,6 +9,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - echo "tst"
       # Add step below to install Ruby version 2.3.8
 
 workflows:
