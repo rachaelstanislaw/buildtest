@@ -7,22 +7,19 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
-
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
-workflows:
-  say-hello-workflow:
-    jobs:
-      - say-hello
+ build-and-test:
+   docker:
+     - image: cimg/python:3.11.0
+   parallelism: 3
+steps:
+     - checkout
+     - python/install-packages:
+         pkg-manager: pip
+ 
+- run:
+         name: Run tests
+         command: |
+           mkdir test-results
+           pytest --collect-only -q | grep -e "\.py" | circleci tests run  --command="xargs pytest --junitxml=test-results/junit.xml -v --" --fail-fast --batch-count=3 --verbose --test-results-path="test-results" --split-by=name
+     - store_test_results:
+         path: test-results
