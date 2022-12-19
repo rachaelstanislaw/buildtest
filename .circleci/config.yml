@@ -16,7 +16,7 @@ steps:
      - python/install-packages:
          pkg-manager: pip
  
-- run:
+     - run:
          name: Run tests
          command: |
            mkdir test-results
