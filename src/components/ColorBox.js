@@ -12,7 +12,7 @@ function ColorBox(props){
         style={ divStyle }
       >
         <div id="button">
-          🌈{ props.hex }
+          🌈test{ props.hex }
           <br></br>
           <div id="message">{ props.message }</div>
         </div>
