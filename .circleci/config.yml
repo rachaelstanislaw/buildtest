@@ -1,21 +1,13 @@
 version: 2.1
+
 jobs:
-  say-hello:
+  hello-job:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:2020.01
     steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, world"
-  say-hi:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - run: echo "Hi there"      
+      - run: echo "hello world" # run the `echo` command
+
 workflows:
-  say-hello-workflow:
+  my-workflow:
     jobs:
-      - say-hello
-      - say-hi
+      - hello-job
