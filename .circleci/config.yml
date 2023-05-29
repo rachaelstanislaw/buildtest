@@ -44,5 +44,5 @@ workflows:
           name: first-build-2
           matrix:
             parameters:
-              to: ["TEST"]
+              to: ["TEST", "AGAIN"]
 
