@@ -1,5 +1,12 @@
 version: 2.1
-
+commands: # a reusable command with parameters
+  greeting:
+    parameters:
+      to:
+        default: "world"
+        type: string
+    steps:
+      - run: echo "Hello <<parameters.to>>"
 jobs:
   build-1:
     docker: 
@@ -23,7 +30,8 @@ jobs:
       - image: cimg/base:2022.10 # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
-      - run: echo "hello world" # run the `echo` command
+      - greeting:
+          to: string
 
 workflows:
   build-workflow:
@@ -31,5 +39,3 @@ workflows:
       - build-1
       - build-2:
           name: first-build-2
-      - build-2:
-          name: second-build-2
