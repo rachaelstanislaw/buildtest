@@ -7,6 +7,13 @@ jobs:
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD
+      - image: cimg/postgres:14.0
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment:
+          POSTGRES_USER: circleci-demo-go
+          POSTGRES_DB: circle_test
     steps:
       - checkout # check out the code in the project directory
       - run: echo "hello world" # run the `echo` command
