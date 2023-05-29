@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  build-1:
     docker: 
       - image: cimg/base:2022.10
     steps:
@@ -18,7 +18,7 @@ jobs:
           key: v1-dependencies-
           paths: 
             - ~/cache
-  build2:
+  build-2:
     docker: # use the docker executor type; machine and macos executors are also supported
       - image: cimg/base:2022.10 # the primary container, where your job's commands are run
     steps:
@@ -28,9 +28,9 @@ jobs:
 workflows:
   build-workflow:
     jobs: 
-      - build2:
+      - build-1
+      - build-2:
           name: first-build-2
-      - build
-      - build2:
+      - build-2:
           requires: 
             - first-build-2
