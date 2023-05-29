@@ -1,39 +1,22 @@
 version: 2.1
 
 jobs:
-  build-1:
-    docker: 
+  build:
+    docker:
       - image: cimg/base:2022.10
     steps:
-      - checkout
-      - run:
-          name: "'run' statements can actually contain a 'name' and 'command' argument as well"
-          command: | 
-           echo "You can even have multiline commands."
-      - restore_cache:
-          keys:
-          - v1-dependencies-
-      - run: echo "testfile" > ~/cache/log.txt
-      - save_cache:
-          key: v1-dependencies-
-          paths: 
-            - ~/cache
-  build-2:
-    docker: # use the docker executor type; machine and macos executors are also supported
-      - image: cimg/base:2022.10 # the primary container, where your job's commands are run
-    parameters:
-      to:
-        type: string
-    steps:
       - checkout # check out the code in the project directory
-      - run: echo "Hello <<parameters.to>>"
+      - run: echo "hello world" # run the `echo` command
+      - run:
+          name: install dockerize # This is a utility that will attempt to connect to a database, in place of an application for this sample.
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+      - run:
+          name: Wait for db # If no database is found in 1 minute the job will fail.
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
 
 workflows:
-  test-matrix-jobs:
-    jobs: 
-      - build-1
-      - build-2:
-          matrix:
-            parameters:
-              to: ["TEST", "AGAIN"]
-
+  build-workflow:
+    jobs:
+      - build
