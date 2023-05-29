@@ -3,7 +3,7 @@ commands: # a reusable command with parameters
   greeting:
     parameters:
       to:
-        default: "world"
+        default: << matrix.* >>
         type: string
     steps:
       - run: echo "Hello <<parameters.to>>"
@@ -28,9 +28,13 @@ jobs:
   build-2:
     docker: # use the docker executor type; machine and macos executors are also supported
       - image: cimg/base:2022.10 # the primary container, where your job's commands are run
+    parameters:
+      to:
+        default: "world"
+        type: string
     steps:
       - checkout # check out the code in the project directory
-      - greeting
+      - run: echo "Hello <<parameters.to>>"
 
 workflows:
   build-workflow:
@@ -38,4 +42,7 @@ workflows:
       - build-1
       - build-2:
           name: first-build-2
+          matrix:
+            parameters:
+              to: ["TEST"]
 
