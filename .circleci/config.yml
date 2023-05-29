@@ -32,5 +32,4 @@ workflows:
       - build-2:
           name: first-build-2
       - build-2:
-          requires: 
-            - first-build-2
+          name: second-build-2
