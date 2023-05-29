@@ -29,5 +29,7 @@ workflows:
   build-workflow:
     jobs: 
       - build2
+          name: first-build-2
       - build
       - build2
+          requires: first-build-2
