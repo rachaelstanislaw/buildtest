@@ -1,12 +1,5 @@
 version: 2.1
-commands: # a reusable command with parameters
-  greeting:
-    parameters:
-      to:
-        default: << matrix.* >>
-        type: string
-    steps:
-      - run: echo "Hello <<parameters.to>>"
+
 jobs:
   build-1:
     docker: 
@@ -37,7 +30,7 @@ jobs:
       - run: echo "Hello <<parameters.to>>"
 
 workflows:
-  build-workflow:
+  test-matrix-jobs:
     jobs: 
       - build-1
       - build-2:
