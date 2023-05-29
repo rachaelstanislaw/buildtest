@@ -1,151 +1,39 @@
 version: 2.1
-orbs:
-  helm: circleci/helm@2.0.1
-  aws-cli: circleci/aws-cli@3.1.5
-  kubernetes: circleci/kubernetes@1.3.1 
-  aws-ecr: circleci/aws-ecr@6.15.3
 
-dev_only_filters: &dev_only_filters
-  context: 
-    - cropwise-small-holder-cicd
-  profile: dev
-  region: AWS_REGION
-  region-eks: eu-central-1
-  role_arn: arn:aws:iam::527377926080:role/CICD
-  account_url: AWS_REGISTRY_DEV
-  filters:
-    branches:
-      only:
-        - develop
-
-qa_only_filters: &qa_only_filters
-  context: 
-    - cropwise-small-holder-cicd
-  profile: qa
-  region: AWS_REGION
-  region-eks: eu-central-1
-  role_arn: arn:aws:iam::230757425793:role/CICD
-  account_url: AWS_REGISTRY_QA
-  filters:
-    branches:
-      only:
-        - develop
-
-prod_only_filters: &prod_only_filters
-  context: 
-    - cropwise-small-holder-cicd
-  profile: prod
-  region: AWS_REGION_PROD_TH
-  region-eks: ap-southeast-1
-  role_arn: arn:aws:iam::679769076045:role/CICD
-  account_url: AWS_REGISTRY_PROD
-  filters:
-    branches:
-      ignore: /.*/
-    tags:
-      only: /^v.*/
 jobs:
-  build:
-    machine:
-      image: ubuntu-2004:202201-02
+  build-1:
+    docker: 
+      - image: cimg/base:2022.10
     steps:
       - checkout
       - run:
-          name: Build
-          command: mvn -B clean verify
-      - persist_to_workspace:
-          root: .
-          paths:
-          - .    
-  ecr-push:
-    machine:
-      image: ubuntu-2004:202201-02
+          name: "'run' statements can actually contain a 'name' and 'command' argument as well"
+          command: | 
+           echo "You can even have multiline commands."
+      - restore_cache:
+          keys:
+          - v1-dependencies-
+      - run: echo "testfile" > ~/cache/log.txt
+      - save_cache:
+          key: v1-dependencies-
+          paths: 
+            - ~/cache
+  build-2:
+    docker: # use the docker executor type; machine and macos executors are also supported
+      - image: cimg/base:2022.10 # the primary container, where your job's commands are run
     parameters:
-      profile:
-        type: string
-      role_arn:
-        type: string
-      region:
-        type: string
-      account_url:
-        type: string
-      region-eks:
+      to:
         type: string
     steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - aws-cli/setup:
-          profile-name: default
-      - aws-cli/role-arn-setup:
-          profile-name: <<parameters.profile>>
-          role-arn: <<parameters.role_arn>>
-          source-profile: default   
-      - aws-ecr/build-and-push-image:
-          account-url: <<parameters.account_url>>
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          dockerfile: Dockerfile
-          profile-name: <<parameters.profile>>
-          path: .
-          region: <<parameters.region>>
-          repo: <<parameters.profile>>-smart-grower-ecr
-          tag: smartgrowercron<<pipeline.number>>
-  deploy-eks:
-    docker:
-      - image: "cimg/base:stable"
-    parameters:
-      profile:
-        type: string
-      region:
-        type: string
-      account_url:
-        type: string  
-      role_arn:
-        type: string
-      region-eks:
-        type: string  
-    steps:
-      - checkout
-      - kubernetes/install-kubectl:
-          kubectl-version: v1.26.0
-      - aws-cli/setup:
-          profile-name: default
-      - aws-cli/role-arn-setup:
-          profile-name: <<parameters.profile>>
-          role-arn: <<parameters.role_arn>>
-          source-profile: default
-      - helm/install-helm-client:
-          version: v3.11.3
-      - run: aws eks --region <<parameters.region-eks>> update-kubeconfig --name <<parameters.profile>>-smart-grower-k8s-cluster --profile <<parameters.profile>>
-      - run: helm upgrade --install smartgrower-cron ./chart -f ./chart/<<parameters.profile>>-values.yaml --set model.imageTag=smartgrowercron<<pipeline.number>> -n smartgrower-cron  --create-namespace  --debug
+      - checkout # check out the code in the project directory
+      - run: echo "Hello <<parameters.to>>"
+
 workflows:
-  BuildAndTest:
-    jobs:
-      - build
-      - ecr-push:
-          name: ecr-push-dev
-          profile: "DEV PROFILE"
-          requires:
-            - build
-          <<: *dev_only_filters  
-      - deploy-eks:
-          name: deploy-eks-dev
-          requires:
-            - ecr-push-dev
-          <<: *dev_only_filters
-      - approve-qa-deploy:
-          type: approval
-          requires:
-            - build
-      - ecr-push:
-          name: ecr-push-2
-          profile: "QA PROFILE"
-          requires:
-            - approve-qa-deploy
-          <<: *qa_only_filters  
-      - deploy-eks:
-          name: deploy-eks-qa
-          requires:
-            - ecr-push-2
-          <<: *qa_only_filters
+  test-matrix-jobs:
+    jobs: 
+      - build-1
+      - build-2:
+          matrix:
+            parameters:
+              to: ["TEST", "AGAIN"]
+
