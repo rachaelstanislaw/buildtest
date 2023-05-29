@@ -29,6 +29,6 @@ jobs:
 workflows:
   build-workflow:
     jobs: 
-      - build
       - build2
       - build
+      - build2
