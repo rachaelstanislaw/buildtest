@@ -30,8 +30,7 @@ jobs:
       - image: cimg/base:2022.10 # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
-      - greeting:
-          to: string
+      - greeting
 
 workflows:
   build-workflow:
@@ -39,3 +38,4 @@ workflows:
       - build-1
       - build-2:
           name: first-build-2
+
